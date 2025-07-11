@@ -60,8 +60,10 @@ class AppModel: ObservableObject {
 }
 
 struct CameraViewControllerWrapper: UIViewControllerRepresentable {
+    @EnvironmentObject var appModel: AppModel
+
     func makeUIViewController(context: Context) -> CameraViewController {
-        return CameraViewController()
+        return CameraViewController(isVideoMode: appModel.captureMode == .video)
     }
 
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}

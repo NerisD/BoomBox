@@ -9,6 +9,13 @@ import UIKit
 import AVFoundation
 
 class CameraViewController: UIViewController {
+    // Mode photo ou vidéo
+    var isVideoMode: Bool = false
+
+    convenience init(isVideoMode: Bool) {
+        self.init()
+        self.isVideoMode = isVideoMode
+    }
     private let session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var captureOutput = AVCapturePhotoOutput()
@@ -78,14 +85,27 @@ class CameraViewController: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 70)
         ])
 
-        button.addTarget(self, action: #selector(capturePhoto), for: .touchUpInside)
+        button.addTarget(self, action: #selector(captureAction), for: .touchUpInside)
     }
 
-    @objc private func capturePhoto() {
+    @objc private func captureAction() {
+        if isVideoMode {
+            startBoomerangVideoCapture()
+        } else {
+            capturePhoto()
+        }
+    }
+
+    private func capturePhoto() {
         guard session.isRunning else { return }
         let settings = AVCapturePhotoSettings()
         settings.isAutoStillImageStabilizationEnabled = true
         captureOutput.capturePhoto(with: settings, delegate: self)
+    }
+
+    private func startBoomerangVideoCapture() {
+        print("Début de la capture vidéo Boomerang")
+        // À implémenter
     }
 
     private func addPhotoboothOverlay() {
