@@ -36,9 +36,20 @@ class CameraViewController: UIViewController {
 
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer?.videoGravity = .resizeAspectFill
+        let previewContainer = UIView()
+        previewContainer.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(previewContainer, at: 0)
+
+        NSLayoutConstraint.activate([
+            previewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            previewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            previewContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            previewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
         previewLayer?.frame = view.bounds
         if let layer = previewLayer {
-            view.layer.insertSublayer(layer, at: 0)
+            previewContainer.layer.addSublayer(layer)
         }
 
         session.commitConfiguration()
@@ -49,6 +60,7 @@ class CameraViewController: UIViewController {
         _ = AVCapturePhotoOutput().isStillImageStabilizationSupported
 
         addCaptureButton()
+        addPhotoboothOverlay()
     }
 
     private func addCaptureButton() {
@@ -74,13 +86,40 @@ class CameraViewController: UIViewController {
         settings.isAutoStillImageStabilizationEnabled = true
         captureOutput.capturePhoto(with: settings, delegate: self)
     }
+
+    private func addPhotoboothOverlay() {
+        guard let overlayImage = UIImage(named: "photobooth_overlay") else { return }
+        let overlayView = UIImageView(image: overlayImage)
+        overlayView.contentMode = .scaleAspectFit
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        overlayView.isUserInteractionEnabled = false
+        view.addSubview(overlayView)
+
+        NSLayoutConstraint.activate([
+            overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            overlayView.topAnchor.constraint(equalTo: view.topAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        view.bringSubviewToFront(overlayView)
+    }
 }
 
 extension CameraViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         print("Photo capturée")
-        guard let data = photo.fileDataRepresentation(), let image = UIImage(data: data) else { return }
-        // Pour l'instant on peut afficher l'image ou la sauvegarder
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        guard let data = photo.fileDataRepresentation(),
+              let baseImage = UIImage(data: data),
+              let overlayImage = UIImage(named: "photobooth_overlay") else { return }
+
+        UIGraphicsBeginImageContextWithOptions(baseImage.size, false, baseImage.scale)
+        baseImage.draw(in: CGRect(origin: .zero, size: baseImage.size))
+        overlayImage.draw(in: CGRect(origin: .zero, size: baseImage.size), blendMode: .normal, alpha: 1.0)
+        let combinedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        guard let finalImage = combinedImage else { return }
+        UIImageWriteToSavedPhotosAlbum(finalImage, nil, nil, nil)
     }
 }
