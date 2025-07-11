@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct BoomBoxApp: App {
-    let persistenceController = PersistenceController.shared
+    @StateObject private var appModel = AppModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(appModel)
         }
     }
 }
