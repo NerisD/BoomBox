@@ -105,7 +105,37 @@ class CameraViewController: UIViewController {
 
     private func startBoomerangVideoCapture() {
         print("Début de la capture vidéo Boomerang")
-        // À implémenter
+
+        let countdownLabel = UILabel()
+        countdownLabel.font = UIFont.boldSystemFont(ofSize: 72)
+        countdownLabel.textColor = .white
+        countdownLabel.textAlignment = .center
+        countdownLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(countdownLabel)
+
+        NSLayoutConstraint.activate([
+            countdownLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            countdownLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+
+        var secondsRemaining = 3
+        countdownLabel.text = "\(secondsRemaining)"
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            secondsRemaining -= 1
+            if secondsRemaining > 0 {
+                countdownLabel.text = "\(secondsRemaining)"
+            } else {
+                timer.invalidate()
+                countdownLabel.removeFromSuperview()
+
+                // TODO: Replace the following with actual boomerang video capture logic
+                let alert = UIAlertController(title: "Capture", message: "Boomerang video capture started", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     private func addPhotoboothOverlay() {
@@ -163,4 +193,3 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         present(previewVC, animated: true, completion: nil)
     }
 }
-
