@@ -61,6 +61,7 @@ class CameraViewController: UIViewController {
 
         addCaptureButton()
         addPhotoboothOverlay()
+        addBackButton()
     }
 
     private func addCaptureButton() {
@@ -104,6 +105,23 @@ class CameraViewController: UIViewController {
         
         view.bringSubviewToFront(overlayView)
     }
+    private func addBackButton() {
+        let backButton = UIButton(type: .system)
+        backButton.setTitle("Retour", for: .normal)
+        backButton.setTitleColor(.white, for: .normal)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
+        view.addSubview(backButton)
+
+        NSLayoutConstraint.activate([
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+        ])
+    }
+
+    @objc private func dismissSelf() {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 extension CameraViewController: AVCapturePhotoCaptureDelegate {
@@ -125,3 +143,4 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         present(previewVC, animated: true, completion: nil)
     }
 }
+
