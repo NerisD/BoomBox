@@ -120,6 +120,8 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         UIGraphicsEndImageContext()
 
         guard let finalImage = combinedImage else { return }
-        UIImageWriteToSavedPhotosAlbum(finalImage, nil, nil, nil)
+        let previewVC = PhotoPreviewViewController()
+        previewVC.configure(with: finalImage)
+        present(previewVC, animated: true, completion: nil)
     }
 }

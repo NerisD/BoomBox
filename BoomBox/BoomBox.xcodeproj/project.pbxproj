@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		750A72F72E20EA7400078A42 /* BoomBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoomBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		750A72F72E20EA7400078A42 /* BoomBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = BoomBox.app; path = "/Volumes/Lexar/Projet/BoomBox/BoomBox/build/Debug-iphoneos/BoomBox.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,16 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				750A72F92E20EA7400078A42 /* BoomBox */,
-				750A72F82E20EA7400078A42 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		750A72F82E20EA7400078A42 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				750A72F72E20EA7400078A42 /* BoomBox.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,7 +99,7 @@
 			mainGroup = 750A72EE2E20EA7400078A42;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 750A72F82E20EA7400078A42 /* Products */;
+			productRefGroup = 750A72EE2E20EA7400078A42;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
