@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		750A72F72E20EA7400078A42 /* BoomBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = BoomBox.app; path = "/Volumes/Lexar/Projet/BoomBox/BoomBox/build/Debug-iphoneos/BoomBox.app"; sourceTree = "<absolute>"; };
+		750A73192E261D8900078A42 /* BoomBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoomBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				750A72F92E20EA7400078A42 /* BoomBox */,
+				750A73192E261D8900078A42 /* BoomBox.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,7 +72,7 @@
 			packageProductDependencies = (
 			);
 			productName = BoomBox;
-			productReference = 750A72F72E20EA7400078A42 /* BoomBox.app */;
+			productReference = 750A73192E261D8900078A42 /* BoomBox.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

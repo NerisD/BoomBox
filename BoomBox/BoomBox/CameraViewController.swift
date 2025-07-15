@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import AVKit
 
 class CameraViewController: UIViewController {
     // Mode photo ou vidéo
@@ -19,6 +20,9 @@ class CameraViewController: UIViewController {
     private let session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var captureOutput = AVCapturePhotoOutput()
+    private var capturedImages: [UIImage] = []
+    private var captureTimer: Timer?
+    private var captureCount = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,13 +133,26 @@ class CameraViewController: UIViewController {
                 timer.invalidate()
                 countdownLabel.removeFromSuperview()
 
-                // TODO: Replace the following with actual boomerang video capture logic
-                let alert = UIAlertController(title: "Capture", message: "Boomerang video capture started", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+                self.recordBoomerangVideo()
             }
         }
         RunLoop.main.add(timer, forMode: .common)
+    }
+
+    private func recordBoomerangVideo() {
+        capturedImages = []
+        captureCount = 0
+
+        captureTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+            let settings = AVCapturePhotoSettings()
+            self.captureOutput.capturePhoto(with: settings, delegate: self)
+            self.captureCount += 1
+
+            if self.captureCount >= 10 {
+                timer.invalidate()
+                self.captureTimer = nil
+            }
+        }
     }
 
     private func addPhotoboothOverlay() {
@@ -188,6 +205,32 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         UIGraphicsEndImageContext()
 
         guard let finalImage = combinedImage else { return }
+        
+        if isVideoMode {
+            capturedImages.append(finalImage)
+
+            if capturedImages.count == 10 {
+                BoomerangProcessor.shared.createBoomerang(from: capturedImages) { url in
+                    guard let url = url else { return }
+
+                    let playerVC = AVPlayerViewController()
+                    playerVC.player = AVPlayer(url: url)
+                    DispatchQueue.main.async {
+                        self.present(playerVC, animated: true) {
+                            playerVC.player?.play()
+                            playerVC.showsPlaybackControls = true
+                            playerVC.player?.actionAtItemEnd = .none
+                            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerVC.player?.currentItem, queue: .main) { _ in
+                                playerVC.player?.seek(to: .zero)
+                                playerVC.player?.play()
+                            }
+                        }
+                    }
+                }
+            }
+            return
+        }
+
         let previewVC = PhotoPreviewViewController()
         previewVC.configure(with: finalImage)
         present(previewVC, animated: true, completion: nil)
